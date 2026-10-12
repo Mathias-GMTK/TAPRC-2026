@@ -20,5 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-      - run: pip install black
+      - run: pip install black flake8 isort
       - run: black --check
+      - run: isort --check .
+      - run: flake8
