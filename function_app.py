@@ -6,45 +6,50 @@ import pyodbc
 
 app = func.FunctionApp()
 
-@app.timer_trigger(schedule="0 * * * * *", arg_name="myTimer", run_on_startup=False,
-             use_monitor=False) 
+
+@app.timer_trigger(
+    schedule="0 * * * * *", arg_name="myTimer", run_on_startup=False, use_monitor=False
+)
 def timer_trigger_tipo1(myTimer: func.TimerRequest) -> None:
     if myTimer.past_due:
-        logging.info('O temporizador está atrasado!')
+        logging.info("O temporizador está atrasado!")
 
-    logging.info('Função de temporizador executada.')
+    logging.info("Função de temporizador executada.")
 
-@app.timer_trigger(schedule="0 * * * * *", arg_name="myTimer", run_on_startup=False,
-             use_monitor=False) 
+
+@app.timer_trigger(
+    schedule="0 * * * * *", arg_name="myTimer", run_on_startup=False, use_monitor=False
+)
 def timer_trigger_tipo2(myTimer: func.TimerRequest) -> None:
-    
-    if myTimer.past_due:
-        logging.info('O temporizador está atrasado!')
 
-    logging.info('Função de temporizador executada.')
+    if myTimer.past_due:
+        logging.info("O temporizador está atrasado!")
+
+    logging.info("Função de temporizador executada.")
 
 
 @app.route(route="http_trigger", auth_level=func.AuthLevel.FUNCTION)
 def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+    logging.info("Python HTTP trigger function processed a request.")
 
-    name = req.params.get('name')
-    lastname = req.params.get('lastname')
-    
+    name = req.params.get("name")
+    lastname = req.params.get("lastname")
+
     if name and lastname:
         return func.HttpResponse(f"Eai, {name} {lastname}. você conseguiu!!")
     else:
         return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
+            "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
+            status_code=200,
         )
 
 
-@app.timer_trigger(schedule="0 * * * * *", arg_name="myTimer", run_on_startup=False,
-                   use_monitor=True)
+@app.timer_trigger(
+    schedule="0 * * * * *", arg_name="myTimer", run_on_startup=False, use_monitor=True
+)
 def timer_trigger_chamado(myTimer: func.TimerRequest) -> None:
     if myTimer.past_due:
-        logging.info('O temporizador de chamados está atrasado!')
+        logging.info("O temporizador de chamados está atrasado!")
 
     database = os.getenv("DATABASE")
     host = os.getenv("HOST")
@@ -67,22 +72,22 @@ def timer_trigger_chamado(myTimer: func.TimerRequest) -> None:
             cursor.execute(f"SELECT TOP (3) * FROM [itsm].[{tabela}]")
             colunas = [coluna[0] for coluna in cursor.description]
             dados = cursor.fetchall()
-            
-            logging.info('CONSULTANDO DADOS DA TABELA: %s', tabela)
-            logging.info('Consulta retornou %s dados(s).', len(dados))
+
+            logging.info("CONSULTANDO DADOS DA TABELA: %s", tabela)
+            logging.info("Consulta retornou %s dados(s).", len(dados))
             for dado in dados:
-                logging.info('%s: %s', tabela, dict(zip(colunas, dado)))
+                logging.info("%s: %s", tabela, dict(zip(colunas, dado)))
 
         # SELECT DA TABELA CHAMADO
-        consultar_dados("chamado") 
+        consultar_dados("chamado")
         logging.info("-")
 
         # SELECT DA TABELA ANALISTA
-        consultar_dados("analista") 
+        consultar_dados("analista")
         logging.info("-")
 
         # SELECT DA TABELA CATEGORIA
-        consultar_dados("categoria") 
+        consultar_dados("categoria")
         logging.info("-")
 
         # SELECT DA TABELA CHAMADO_SLA
@@ -104,7 +109,7 @@ def timer_trigger_chamado(myTimer: func.TimerRequest) -> None:
         # SELECT DA TABELA fila
         consultar_dados("fila")
         logging.info("-")
-        
+
         # SELECT DA TABELA sla
         consultar_dados("sla")
         logging.info("-")
@@ -114,7 +119,7 @@ def timer_trigger_chamado(myTimer: func.TimerRequest) -> None:
         logging.info("-")
 
     except Exception:
-        logging.exception('Erro ao consultar os chamados.')
+        logging.exception("Erro ao consultar os chamados.")
         raise
     finally:
         if connection is not None:
