@@ -50,3 +50,6 @@ Função baseada em tempo que atua como cliente HTTP para outra Azure Function.
 ### Funcionamento
 É disparada periodicamente por um temporizador, realiza uma chamada HTTP para uma segunda função e exibe a resposta recebida, que contém a informação enviada acrescida de um texto de identificação.
 </details>
+
+
+teste
